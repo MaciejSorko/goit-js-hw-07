@@ -3,21 +3,35 @@ import { galleryItems } from './gallery-items.js';
 const gallery = document.querySelector(".gallery");
 
 console.log(galleryItems);
-galleryItems.forEach((item) => {
-    const galleryItem = `<div class="gallery__item">
-    <a class="gallery__link"
-     href="${item.original}">
-     <img class="gallery__image"
-     src="${item.preview}"
-     data-source="${item.original}"
-     alt="${item.description}" />
-</a></div>`
-    gallery.insertAdjacentHTML('beforeend', galleryItem);
 
-});
+const markup = galleryItems
+  .map(
+    (galleryItem) => `<div class="gallery__item">
+    <a class="gallery__link"
+     href="${galleryItem.original}">
+     <img class="gallery__image"
+     src="${galleryItem.preview}"
+     data-source="${galleryItem.original}"
+     alt="${galleryItem.description}" />
+</a></div>`
+  )
+  .join("");
+
+gallery.insertAdjacentHTML("beforeend", markup);
+
+
 gallery.onclick = (event) => {
     event.preventDefault();
-    basicLightbox.create(`
+    if (event.target.nodeName !== "IMG") {
+      return;
+    } else {
+      basicLightbox
+        .create(
+          `
      <img width="1400" height="900" src="${event.target.dataset.source}">
-    `).show()
-}
+    `
+        )
+        .show();
+    }
+};
+
